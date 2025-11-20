@@ -25,16 +25,6 @@ porta_init	PROC		;Initialize port A for the joystick demo
 		bx		lr
 		ENDP
 			
-read_jstick	PROC
-		EXPORT read_jstick
-		ldr		r2,=(GPIOA_BASE+GPIO_IDR)
-		ldr		r0,[r2]
-		and		r0,#0x0000002f
-		bx		lr
-		ENDP
-		
-
-;Interrupt Support Code
 
 exti5_init	PROC		;initialize the external interrupt detector for PA.5
 		EXPORT	exti5_init

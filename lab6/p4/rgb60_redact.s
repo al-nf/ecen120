@@ -35,7 +35,7 @@ spi32		PROC	;send 32 bits out the SPI port - MSB first
 			EXPORT	spi32
 		mov		r1,#32
 		ldr		r2,=(GPIOE_BASE+GPIO_BSRR)
-		push	{r3, r4,r5,r6}
+		push	{r3,r4,r5,r6}
 		ldr		r3,=GPIO_BSRR_BS_13
 		ldr		r4,=GPIO_BSRR_BR_13
 		ldr		r5,=GPIO_BSRR_BS_15
@@ -48,7 +48,7 @@ spi32_1	tst		r0,#0x80000000
 		lsl		r0,#1
 		subs	r1,#1
 		bne		spi32_1
-		pop		{r3, r4,r5,r6}
+		pop		{r3,r4,r5,r6}
 		bx		lr
 		ENDP	
 			
