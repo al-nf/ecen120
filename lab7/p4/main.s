@@ -35,9 +35,11 @@ __main	PROC
 		ldr		r0,=sample_per		;set output rate to 20KHz
 		bl		tim2_freq
 
-
-
-endless	b		endless		
+endless	
+		bl		adc_read			;read ADC channel 6
+		ldr		r1,=gain			;get pointer to gain variable
+		str		r0,[r1]				;store ADC value in gain
+		b		endless		
 		ENDP
 			
 			
@@ -60,13 +62,6 @@ TIM2_IRQHandler PROC
 		ENDP
 			
 calc_phaseinc	PROC
-					; To calculate the phaseinc, take the new frequency (w)/sampling freq.(w0) * 1024
-					; to avoid precision issues - we will keep phase in 16ths then divide at the last minute
-					; w arrives in r0; phase increment returned in r0
-					; works from about 2Hz to sampling freq./2
-					; Assumes a wave table size of 1024 and a phase iterator scaled up by 16
-
- 
 		ldr		r1, =sample_freq
 		ldr		r2, =16
 		ldr		r3, =1024
@@ -78,9 +73,6 @@ calc_phaseinc	PROC
 		ENDP
 
 update_phase	PROC
-					;recieves a pointer to phase in r0 and a pointer to phaseinc in r1
-					;adds phaseinc to phase
- 
 		ldr		r2, [r0]
 		ldr		r1, [r1]
 		add		r2, r1
@@ -93,12 +85,6 @@ skip	str		r2, [r0]
 		ENDP
 		
 get_tblval		PROC
-					;recieves a pointer to phase in r0 and a pointer to a wave table in r1
-					;Assume the wave table is 1024 entries; 16-bits each
-					;Assume the phase value is in 16ths.
-					;Return the sample in r0
-				
- 
 		ldr		r0, [r0]
 		ldr		r2, =16
 		udiv	r0, r0, r2
@@ -107,14 +93,14 @@ get_tblval		PROC
 		add		r1, r0
 		ldrh	r0, [r1]
 		
-		push	{r4, lr}
+		push	{r4, r5, lr}
 		mov		r4, r0
-		mov		r5, r1
-		bl		adc_read
+		ldr		r5,=gain			
+		ldr		r5,[r5]				
 		ldr		r1, =4096
-		mul		r0, r0, r4
+		mul		r0, r5, r4
 		udiv	r0, r0, r1
-		pop		{r4, lr}
+		pop		{r4, r5, lr}
 		
 		bx		lr
 		ENDP
@@ -126,5 +112,6 @@ get_tblval		PROC
 			ALIGN			
 phase		dcd		0					;maintain in 16ths.
 phaseinc	dcd		160	
+gain		dcd		0				
 
 	END

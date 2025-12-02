@@ -26,12 +26,12 @@ loop	mov		r4, #60
 		ldr		r0, =0x0
 		bl		spi32
 loop2	cmp		r4, r8
-		beq		red
+		beq		blue
 		ldr		r0, =0xE99042f5
 		bl		spi32
 		b		out
 		
-red		ldr		r0, =0xE9FF0000
+blue	ldr		r0, =0xE9FF0000
 		bl		spi32
 		b		out
 

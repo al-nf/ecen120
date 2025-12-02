@@ -32,7 +32,7 @@ exit1   pop     {lr, r4, r5, r6, r7}
 compare_and_swap proc
         lsl     r1, #2
         add     r0, r1 ; first element
-        push    {r4, r5, r6}
+        push    {r4, r5, r6, r7}
         mov     r4, r0 ; store address of first element for later
         mov     r5, r0 ; assume r0 is the location of the smallest element
         ldr     r6, =eoa
@@ -43,9 +43,15 @@ loop2   add     r0, #4
         
         ldr     r2, [r0] ; ptr to current str
 
-        cmp     r2, r3 ; instead, we want to compare the contents of the pointers
-        ; REPLACE WITH A STRING COMPARISON (MAYBE SUBROUTINE)
+        push    {r0, r1, lr}
+        mov     r0, r2 ; r0 = cur
+        mov     r1, r3 ; r1 = min
+        bl      strcmp
+        mov     r7, r0
+        pop     {r0, r1, lr}
 
+
+        cmp     r7, #0
         bge     nothing
         ldr     r3, [r0]
         mov     r5, r0 ; store address of the smallest element
@@ -53,6 +59,39 @@ nothing b       loop2
 exit2   ldr     r2, [r4] ; temporarily store first element for swapping
         str     r3, [r4]
         str     r2, [r5]
+        pop     {r4, r5, r6, r7}
+        bx      lr
+        endp
+
+strcmp  proc
+        push    {r4, r5, r6}
+strcmp_loop
+        ldrb    r4, [r0], #1
+        ldrb    r5, [r1], #1
+        
+        ; Convert r4 to lower if upper
+        cmp     r4, #65
+        blt     skip_r4
+        cmp     r4, #90
+        bgt     skip_r4
+        add     r4, r4, #32
+skip_r4
+        ; Convert r5 to lower if upper
+        cmp     r5, #65
+        blt     skip_r5
+        cmp     r5, #90
+        bgt     skip_r5
+        add     r5, r5, #32  
+skip_r5
+        cmp     r4, r5       
+        bne     strcmp_ne    
+        cmp     r4, #0      
+        bne     strcmp_loop
+        mov     r0, #0    
+        pop     {r4, r5, r6}
+        bx      lr
+strcmp_ne
+        sub     r0, r4, r5 
         pop     {r4, r5, r6}
         bx      lr
         endp
