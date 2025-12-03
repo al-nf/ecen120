@@ -112,7 +112,7 @@ get_tblval		PROC
 		add		r1, r0
 		ldrh	r0, [r1]
 		
-		push	{r4, lr}
+		push	{r4, r5, lr}
 		mov		r4, r0
 		mov		r5, r1
 		ldr		r1, =4096
@@ -120,7 +120,7 @@ get_tblval		PROC
 		ldr		r0, [r0]
 		mul		r0, r0, r4
 		udiv	r0, r0, r1
-		pop		{r4, lr}
+		pop		{r4, r5, lr}
 		
 		bx		lr
 		ENDP
