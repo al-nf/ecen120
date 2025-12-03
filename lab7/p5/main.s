@@ -5,6 +5,8 @@
 ; @note
 ;*******************************************************************************
 
+
+
 	INCLUDE core_cm4_constants.s		; Load Constant Definitions
 	INCLUDE stm32l476xx_constants.s   
 	INCLUDE timer.h
@@ -49,6 +51,7 @@ TIM2_IRQHandler PROC
 		mov		r1, #4096
 		udiv	r0, r0, r1
 		add		r0, #300
+		lsl		r0, #1
 		bl		calc_phaseinc
 		ldr		r1, =phaseinc
 		str		r0, [r1]
@@ -75,7 +78,7 @@ calc_phaseinc	PROC
 					; works from about 2Hz to sampling freq./2
 					; Assumes a wave table size of 1024 and a phase iterator scaled up by 16
 
-
+;Put your code here.
 		ldr		r1, =sample_freq
 		ldr		r2, =16
 		ldr		r3, =1024
@@ -89,7 +92,7 @@ calc_phaseinc	PROC
 update_phase	PROC
 					;recieves a pointer to phase in r0 and a pointer to phaseinc in r1
 					;adds phaseinc to phase
-
+;Put your code here.
 		ldr		r2, [r0]
 		ldr		r1, [r1]
 		add		r2, r1
@@ -107,7 +110,7 @@ get_tblval		PROC
 					;Assume the phase value is in 16ths.
 					;Return the sample in r0
 				
-
+;Put your code here.
 		ldr		r0, [r0]
 		ldr		r2, =16
 		udiv	r0, r0, r2

@@ -1,3 +1,4 @@
+
 	INCLUDE core_cm4_constants.s		; Load Constant Definitions
 	INCLUDE stm32l476xx_constants.s 
 		
@@ -64,7 +65,7 @@ adcw11	subs	r0,#1
 		str		r1,[r2]
 		orr		r1,#ADC_CR_ADVREGEN
 		str		r1,[r2]		
-		mov		r1,#(28 * 20)					;About 22ï¿½s delay at 80MHz
+		mov		r1,#(28 * 20)					;About 22µs delay at 80MHz
 adcw2	subs	r1,#1
 		bne		adcw2
 		ldr		r2,=(ADC1_BASE+ADC_CFGR)		;set resolution to 12 bits, right aligned
